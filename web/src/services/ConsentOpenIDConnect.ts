@@ -2,11 +2,13 @@ import { ConsentPath } from "@services/Api";
 import { Get, Post } from "@services/Client";
 
 interface ConsentPostRequestBody {
-    id?: string;
+    flow_id?: string;
     client_id: string;
     consent: boolean;
     pre_configure: boolean;
     claims?: string[];
+    subflow?: string;
+    user_code?: string;
 }
 
 interface ConsentPostResponseBody {
@@ -23,27 +25,39 @@ export interface ConsentGetResponseBody {
     essential_claims: string[] | null;
 }
 
-export function getConsentResponse(consentID: string) {
-    return Get<ConsentGetResponseBody>(ConsentPath + "?id=" + consentID);
+export function getConsentResponse(flowID: string) {
+    return Get<ConsentGetResponseBody>(ConsentPath + "?id=" + flowID);
 }
 
-export function acceptConsent(preConfigure: boolean, clientID: string, claims: string[], consentID?: string) {
+export function acceptConsent(
+    preConfigure: boolean,
+    clientID: string,
+    claims: string[],
+    flowID?: string,
+    subflow?: string,
+    userCode?: string,
+) {
     const body: ConsentPostRequestBody = {
-        id: consentID,
+        flow_id: flowID,
         client_id: clientID,
         consent: true,
         pre_configure: preConfigure,
         claims: claims,
+        subflow: subflow,
+        user_code: userCode,
     };
+
     return Post<ConsentPostResponseBody>(ConsentPath, body);
 }
 
-export function rejectConsent(clientID: string, consentID?: string) {
+export function rejectConsent(clientID: string, flowID?: string, subflow?: string, userCode?: string) {
     const body: ConsentPostRequestBody = {
-        id: consentID,
+        flow_id: flowID,
         client_id: clientID,
         consent: false,
         pre_configure: false,
+        subflow: subflow,
+        user_code: userCode,
     };
     return Post<ConsentPostResponseBody>(ConsentPath, body);
 }

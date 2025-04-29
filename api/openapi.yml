@@ -3145,9 +3145,13 @@ components:
           example: OK
         data:
           type: object
+          required:
+            - flow_id
+            - client_id
+            - consent
           properties:
-            id:
-              description: The identifier of the consent session.
+            flow_id:
+              description: The identifier of the consent flow session.
               type: string
               format: uuid
               pattern: '^[0-9a-fA-F]{8}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{4}\b-[0-9a-fA-F]{12}$'
@@ -3164,6 +3168,13 @@ components:
               description: Indicates if the user consented to pre-configuration.
               type: boolean
               example: true
+            subflow:
+              description: The name of the subflow if applicable.
+              type: string
+              example: 'device_authorization'
+            user_code:
+              description: The user code for the Device Authorization Flow if applicable
+              type: string
     openid.spec.Metadata.OAuth2AuthorizationServer:
       type: object
       required:

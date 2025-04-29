@@ -100,9 +100,9 @@ func OAuth2ConsentDeviceAuthorizationGET(ctx *middlewares.AutheliaCtx) {
 //nolint:gocyclo
 func OAuth2ConsentPOST(ctx *middlewares.AutheliaCtx) {
 	var (
-		consentID uuid.UUID
-		bodyJSON  oidc.ConsentPostRequestBody
-		err       error
+		flowID   uuid.UUID
+		bodyJSON oidc.ConsentPostRequestBody
+		err      error
 	)
 
 	if err = json.Unmarshal(ctx.Request.Body(), &bodyJSON); err != nil {
@@ -112,8 +112,8 @@ func OAuth2ConsentPOST(ctx *middlewares.AutheliaCtx) {
 		return
 	}
 
-	if consentID, err = uuid.Parse(bodyJSON.ConsentID); err != nil {
-		ctx.Logger.Errorf("Unable to convert '%s' into a UUID: %+v", bodyJSON.ConsentID, err)
+	if flowID, err = uuid.Parse(bodyJSON.FlowID); err != nil {
+		ctx.Logger.Errorf("Unable to convert '%s' into a UUID: %+v", bodyJSON.FlowID, err)
 		ctx.ReplyForbidden()
 
 		return
@@ -126,7 +126,7 @@ func OAuth2ConsentPOST(ctx *middlewares.AutheliaCtx) {
 		handled     bool
 	)
 
-	if userSession, consent, client, handled = handleOAuth2ConsentGetSessionsAndClient(ctx, consentID); handled {
+	if userSession, consent, client, handled = handleOAuth2ConsentGetSessionsAndClient(ctx, flowID); handled {
 		return
 	}
 
